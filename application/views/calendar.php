@@ -141,7 +141,7 @@
             extraParams: {
             },
             failure: function() {
-              alert('there was an error while fetching events!');
+              toastr.error('There was an error while fetching events!');
             }
           }],
           slotDuration: '00:05:00',
@@ -202,7 +202,7 @@
             {
               if(data.status)
               {
-                alert('Appointment cancelled.');
+                toastr.success('Appointment cancelled.');
 
                 $('#eventContent').dialog( "close" );
 
@@ -234,7 +234,7 @@
           {
             if(data.status)
             {
-              alert('Show up status changed.');
+              toastr.success('Show up status changed.');
 
               $('#eventContent').dialog( "close" );
 
@@ -374,12 +374,12 @@
             {
               calendar.refetchEvents();
 
-              alert("Appointment added.");
+              toastr.success("Appointment added.");
               $('#eventAdd').dialog( "close" );
             }
             else
             {
-              alert("Appointment not added.");
+              toastr.error("Appointment not added.");
               $('#eventAdd').dialog( "close" );
             }
           },

@@ -239,7 +239,7 @@
           {
             if(data.status)
             {
-              alert('Service added.');
+              toaster.success('Service added.');
 							location.reload();
             }
           },

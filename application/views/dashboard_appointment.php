@@ -232,7 +232,7 @@
 					{
 						if(data.status)
 						{
-							alert('Service edited.');
+							toaster.success('Service edited.');
 							location.reload();
 						}
 					},

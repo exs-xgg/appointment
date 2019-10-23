@@ -143,7 +143,7 @@
           {
             if(data.status)
             {
-              alert('Service added.');
+              toastr.success('Service added.');
 							location.reload();
             }
           },

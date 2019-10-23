@@ -173,7 +173,7 @@
           {
             if(data.status)
             {
-              alert('Service added.');
+              toastr.success('Service added.');
 							location.reload();
             }
           },
@@ -235,7 +235,7 @@
 					{
 						if(data.status)
 						{
-							alert('Service edited.');
+							toastr.success('Service edited.');
 							location.reload();
 						}
 					},
