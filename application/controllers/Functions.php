@@ -292,7 +292,30 @@ class Functions extends CI_Controller {
       echo json_encode($data['list']);
     }
   }
+  
+  public function gimmeAbreak(){
+    $sql = "INSERT into blocked_date (block) values ('" . ($_GET['date']) . "')";
 
+    $query = $this->db->query($sql);
+    return true;
+  }
+  public function whatsMyBreak(){
+          
+    $sql = "select * from blocked_date where block > date(now())";
+
+    $query = $this->db->query($sql);
+    echo json_encode($query->result_array());
+  }
+
+  public function deleteMyBreak(){
+    $sql = "DELETE from blocked_date where id =" .  ($_GET['id']);
+
+    $query = $this->db->query($sql);
+    return true;
+  }
+  public function searchRecords(){
+   echo json_encode($this->fetch_model->getAppointmentList($_GET['start_date'],$_GET['end_date'],'admin'));
+  }
   public function checkSchedAvailability()
   {
     if($this->ion_auth->logged_in() && ($this->ion_auth->in_group("admin") || $this->ion_auth->in_group("client")))

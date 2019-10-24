@@ -64,81 +64,45 @@
 				</div>
 
 				<br>
-
+				<iframe id="txtArea1" style="display:none"></iframe>
 				<div class="tab-content">
-					<table class="table table-hover">
+					<div class="well">
+						<div class="well-body">
+							<h3>SELECT DATE RANGE TO VIEW RECORDS</h3>
+							<div class="">
+								<div class="">
+									
+										<label>Start Date</label><input type="date" id="start_date">
+									
+									
+										<label>End Date</label><input type="date" id="end_date">
+									
+									<br>
+										<button class="btn btn-primary" onclick="searchRecs()">SEARCH RECORDS</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-success" id="btnExport" onclick="fnExcelReport();" disabled> EXPORT TO EXCEL </button>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<table class="table" id="rec_tbl">
 				    <thead>
 				      <tr>
-				        <th>Date</th>
+						<th>Date</th>
+						<th>Client Name</th>
 				        <th>Time Start</th>
 				        <th>Time End</th>
-				        <th>Duration</th>
-								<th>Client Name</th>
-								<th>Service Type</th>
+						<th>Service Type</th>
+						<th>Status</th>
 				      </tr>
 				    </thead>
 				    <tbody>
-							<?php
-							if(isset($appointment))
-								{
-									foreach($appointment as $value)
-									{
-										$time0 = date('h:iA', strtotime($value['appointment_start_time']));;
-										$time1 = date('h:iA', strtotime($value['appointment_end_time']));;
-				            $date = date('F d, Y', strtotime($value['appointment_date']));
-
-										echo '<tr>';
-							      echo '  <td>'.$date.'</td>';
-							      echo '  <td>'.$time0.'</td>';
-							      echo '  <td>'.$time1.'</td>';
-							      echo '  <td>'.$value['services_duration'].'</td>';
-							      echo '  <td>'.$value['last_name'].', '.$value['first_name'].'</td>';
-							      echo '  <td>'.$value['services_name'].'</td>';
-							      echo '</tr>';
-									}
-								}
-							?>
+							
 				    </tbody>
 				  </table>
 				</div>
 
 
-
-
-				<div class="loader-inner line-scale-pulse-out" id="wait">
-					<div></div>
-					<div></div>
-					<div></div>
-					<div></div>
-					<div></div>
-				</div>
-
-				<div id="eventContent" title="Event Details" style="display:none;">
-						<form id="formServiceEdit" name="formServiceEdit">
-							<input type="hidden" id="serviceIDEdit" name="serviceIDEdit" value="">
-							Service Name: <input type="text" placeholder="Enter Name" id="serviceNameEdit" name="serviceNameEdit" class="input-xlarge"><br>
-							Description: <input type="text" placeholder="Enter Description" id="serviceDescEdit" name="serviceDescEdit" class="input-xlarge"><br>
-							Duration: <br>
-							<select id="serviceDurationEdit" name="serviceDurationEdit"  class="form-control" disabled>
-								<option>30</option>
-								<option>60</option>
-								<option>90</option>
-								<option>120</option>
-							</select>
-							<hr>
-							<p>
-								<?php
-									if($this->ion_auth->in_group("admin"))
-									{
-										echo '<input tabindex="9" class="btn btn-inverse large" type="button" value="Save" onclick="editService();">';
-									}
-								?>
-
-							</p>
-						</form>
-				</div>
-
-				<!-- -->
 			</section>
 			<section id="footer-bar">
 			</section>
@@ -146,104 +110,92 @@
 				<span>Copyright 2019 All right reserved.</span>
 			</section>
 		</div>
-
-		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-
-      function addService()
-      {
-        var url = window.location.href;
-        var arr = url.split("/");
-        url = window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/serviceAdd/";
-
-				var form = $("#formServiceAdd");
-
-        $('#wait').show();
-        $.ajax({
-					type: "POST",
-          url : url,
-					dataType: "JSON",
-          data: form.serialize(),
-          success: function(data)
-          {
-            if(data.status)
-            {
-              toastr.success("Appointment Added!");
-							location.reload();
-            }else(
-				toastr.error(data.message);
-			)
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-              // /document.getElementById("message").innerHTML = jqXHR.responseText;
-          },
-          complete: function(){
-            $('#wait').hide();
-          }
-        });
-      }
-
-			function openService(id)
-			{
+		<script>
+			function searchRecs(){
+				$("#btnExport").attr("disabled");
 				var url = window.location.href;
-        var arr = url.split("/");
-        url = window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/servicesGet/" + id;
-
-        $('#wait').show();
-        $.ajax({
-					type: "GET",
-          url : url,
-					dataType: "JSON",
-          success: function(data)
-          {
-						$('#serviceNameEdit').val(data[0].Name);
-						$("#serviceDescEdit").val(data[0].Desc);
-						$("#serviceDurationEdit").val(data[0].Duration);
-						$("#serviceIDEdit").val(data[0].ID);
-						$("#eventContent").dialog({ modal: true, title: "Edit Service", width:350});
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-              // /document.getElementById("message").innerHTML = jqXHR.responseText;
-          },
-          complete: function(){
-            $('#wait').hide();
-          }
-        });
-			}
-
-			function editService()
-			{
-				var id = $("#serviceIDEdit").val();
-				var url = window.location.href;
-				var arr = url.split("/");
-				url = window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/serviceEdit/" + id;
-
-				var form = $("#formServiceEdit");
-
-				$('#wait').show();
-				$.ajax({
-					type: "POST",
-					url : url,
-					dataType: "JSON",
-					data: form.serialize(),
-					success: function(data)
-					{
-						if(data.status)
-						{
-							toaster.success('Service edited.');
-							location.reload();
-						}
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-							// /document.getElementById("message").innerHTML = jqXHR.responseText;
-					},
-					complete: function(){
-						$('#wait').hide();
+        		var arr = url.split("/");
+				$start_date = $("#start_date").val();
+				$end_date = $("#end_date").val();
+				$.get({
+					url: window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/searchRecords?start_date=" + $start_date + "&end_date=" + $end_date,
+					success: function(res){
+						
+						$("#rec_tbl tbody").empty();
+						console.table(JSON.parse(res));
+						res = JSON.parse(res);
+						res.forEach(function(v)
+						{	
+							var class_anuna = "";
+							var anuna = ((v.is_cancelled=='1') ? '0' : ((v.is_show=='1') ? '9' : '1' ) );
+							switch (anuna) {
+								case '0':
+									class_anuna = 'danger';
+									anuna = "Cancelled";
+									break;
+								case '9':
+									class_anuna = 'success';
+									anuna = "Showed Up";
+									break;
+								case '1':
+									class_anuna = 'warning';
+									anuna = "Pending";
+									break;
+							
+								default:
+									break;
+							}
+							var rts = moment(v.start.split("T")[1].substr(0,5),"HH:mm").format('hh:mm A');
+							var rte = moment(v.end.split("T")[1].substr(0,5),"HH:mm").format('hh:mm A');;
+							var rf = v.title.split(" / ");
+							$('#rec_tbl tbody').append('<tr>\
+							<td>' + moment(v.start).format("MM-DD-YYYY") + '</td>\
+						<td>'+ rf[0] + '</td>\
+				        <td>'+ rts + '</td>\
+				        <td>'+ rte + '</td>\
+						<td>'+ rf[1] + '</td>\
+						<td class="badge badge-'+class_anuna+'">' + anuna + '</td></tr>');
+						});
 					}
 				});
+				
+				$("#btnExport").removeAttr("disabled");
 			}
 
-    </script>
+
+			function fnExcelReport()
+{
+    var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
+    var textRange; var j=0;
+    tab = document.getElementById('rec_tbl'); // id of table
+
+    for(j = 0 ; j < tab.rows.length ; j++) 
+    {     
+        tab_text=tab_text+tab.rows[j].innerHTML+"</tr>";
+        //tab_text=tab_text+"</tr>";
+    }
+
+    tab_text=tab_text+"</table>";
+    tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
+    tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
+    tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE "); 
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+    {
+        txtArea1.document.open("txt/html","replace");
+        txtArea1.document.write(tab_text);
+        txtArea1.document.close();
+        txtArea1.focus(); 
+        sa=txtArea1.document.execCommand("SaveAs",true,"Report.xls");
+    }  
+    else                 //other browser not tested on IE 11
+        sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));  
+
+    return (sa);
+}
+		</script>
+
+    

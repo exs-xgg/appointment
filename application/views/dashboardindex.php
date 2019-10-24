@@ -70,10 +70,11 @@
 					if($this->ion_auth->logged_in() && ($this->ion_auth->in_group("admin")))
 					{
 						echo '<div>';
-						echo '<button class="btn btn-primary" onclick="ajaxSendSMS()">Send SMS Notification</button>';
+            echo '<button class="btn btn-primary" onclick="ajaxSendSMS()">Send SMS Notification</button>';
 						echo '</div>';
 					}
           ?>
+
           <script>
 function ajaxSendSMS(){
 $.get({
@@ -205,6 +206,83 @@ toastr.success("SMS Now Queued for Sending!");
 
 				<!-- -->
 			</section>
+      <section>
+      <div class="well">
+          <div class="well-body">
+            <div class="container">
+            <div class="">
+              <div style="max-width: 45%; float: left; padding: 20px">
+                <h4>Blocked Dates</h4>
+                <label for="blkdate">Insert Date to Block</label>
+                <input type="date" name="block_date" id="blkdate"><br>
+                <button class="btn btn-primary" onclick="addBreak()">Block Date</button>
+              </div>
+              <div style="max-width: 45%; float: left; padding: 20px">
+                <h4>Blocked Dates List</h4>
+                <table id="blktbl" class="table"  style="min-width: 100%; float: left">
+                  <thead>
+                    <tr><th>Date</th><th>Action</th><tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Loading</td><td></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+      </div>
+      <script>
+
+      fetchBreaks();
+
+      var url = window.location.href;
+        var arr = url.split("/");
+      function fetchBreaks(){
+        
+      var url = window.location.href;
+        var arr = url.split("/");
+        $.get({
+          url: window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/whatsMyBreak",
+            success: function(data){
+              $("#blktbl tbody").empty();
+              data = JSON.parse(data);
+              data.forEach(function(fd) {
+                $("#blktbl tbody").append('<tr><td>' + moment(fd.block).format("MM/DD/YYYY") + '</td><td class="badge badge-warning" onclick="delBreak(' + fd.id + ')">Delete</td></tr>');
+              });
+            }
+        });
+      }
+      function addBreak(){
+        
+      var url = window.location.href;
+        var arr = url.split("/");
+        $.get({
+          url: window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/gimmeAbreak?date=" + $("#blkdate").val(),
+          success: function(data){
+            toastr.success("Added Blocked Date");
+            
+        fetchBreaks();
+
+          }
+        });
+
+      }
+      function delBreak(e){
+        
+      var url = window.location.href;
+        var arr = url.split("/");
+        $.get({
+          url: window.location.protocol + "//" + window.location.hostname + "/" + arr[3] + "/index.php/functions/deleteMyBreak?id=" + e,
+          success: function(data){
+            toastr.success("Deleted Blocked Date");
+
+            fetchBreaks();
+          }
+        });
+      }
+     
+      </script>
+      </section>
 			<section id="footer-bar">
 			</section>
 			<section id="copyright">
