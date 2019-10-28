@@ -33,7 +33,10 @@ class Fetch_model extends CI_Model {
                     CONCAT_WS(' / ', CONCAT(A.first_name, ' ', A.last_name), services_name) AS 'title',
                     CONCAT_WS(' / ', CONCAT(A.first_name, ' ', A.last_name), services_name, CONCAT(' by ', B.first_name, ' ', B.last_name)) AS 'description',
                     CONCAT_WS('T',appointment_date, appointment_start_time) AS 'start',
-                    CONCAT_WS('T',appointment_date, appointment_end_time) AS 'end'
+                    CONCAT_WS('T',appointment_date, appointment_end_time) AS 'end',
+                    appointment_id AS 'id',
+                    appointment_cancelled as 'is_cancelled',
+                    appointment_show_up as 'is_show'
                     FROM appointment
             LEFT JOIN services ON services.services_id=appointment.appointment_service_id
             LEFT JOIN users A ON A.id=appointment.appointment_client_id
@@ -79,6 +82,7 @@ class Fetch_model extends CI_Model {
             LEFT JOIN users B ON B.id=appointment.appointment_dentist_id
 
             WHERE ((appointment_date BETWEEN ? AND ?) ".$where.")
+            AND appointment_cancelled = 0
            ";
 
             $query = $this->db->query($sql, $array);

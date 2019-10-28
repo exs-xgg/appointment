@@ -249,7 +249,7 @@ class Functions extends CI_Controller {
     $res_date = "";
     $dateToCheck = $_GET['date'];
     $query = $this->db->get_where('blocked_date',array('block' => $dateToCheck));
-    $res_date = $this->db->get_where('appointment',array('appointment_date' => $dateToCheck));
+    $res_date = $this->db->get_where('appointment',array('appointment_date' => $dateToCheck, 'appointment_cancelled' => 0));
     $isBlocked =  ($query->num_rows() > 0) ? true : false;
     echo json_encode(array("isBlocked" => $isBlocked, "res_date" => ( $res_date->result_array()) ));
   }

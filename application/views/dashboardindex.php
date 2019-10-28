@@ -1,4 +1,4 @@
-	<div id="top-bar" class="container">
+<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
 					<form method="POST" class="search_form">
@@ -201,9 +201,10 @@ toastr.success("SMS Now Queued for Sending!");
 						echo '    Registration info here.';
 						echo '  </div>';
 						echo '</div>';
-					}
-				?>
-
+					 }
+				?><?php
+        if( $this->ion_auth->in_group("admin") ){
+?>
 				<!-- -->
 			</section>
       <section>
@@ -283,6 +284,9 @@ toastr.success("SMS Now Queued for Sending!");
      
       </script>
       </section>
+<?php
+ } 
+?>
 			<section id="footer-bar">
 			</section>
 			<section id="copyright">
@@ -362,7 +366,7 @@ toastr.success("SMS Now Queued for Sending!");
             extraParams: {
             },
             failure: function() {
-              alert('there was an error while fetching events!');
+              toastr.error('there was an error while fetching events!');
             }
           }],
           slotDuration: '00:05:00',
@@ -423,7 +427,7 @@ toastr.success("SMS Now Queued for Sending!");
             {
               if(data.status)
               {
-                alert('Appointment cancelled.');
+                toastr.success('Appointment cancelled.');
 
                 $('#eventContent').dialog( "close" );
 
@@ -455,7 +459,7 @@ toastr.success("SMS Now Queued for Sending!");
           {
             if(data.status)
             {
-              alert('Show up status changed.');
+              toastr.success('Show up status changed.');
 
               $('#eventContent').dialog( "close" );
 

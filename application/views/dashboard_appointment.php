@@ -1,3 +1,5 @@
+<script src="https://unpkg.com/jspdf@1.5.3/dist/jspdf.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.2.9/dist/jspdf.plugin.autotable.js"></script>
 	<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
@@ -65,7 +67,7 @@
 
 				<br>
 				<iframe id="txtArea1" style="display:none"></iframe>
-				<div class="tab-content">
+				<div class="tab-content" id="pdfdiv">
 					<div class="well">
 						<div class="well-body">
 							<h3>SELECT DATE RANGE TO VIEW RECORDS</h3>
@@ -86,6 +88,14 @@
 					</div>
 					
 					<table class="table" id="rec_tbl">
+					    <colgroup>
+                             <col width="20%">
+                                <col width="30%">
+                                    <col width="10%">
+                                        <col width="10%">
+                                    <col width="20%">
+                                        <col width="10%">
+                     </colgroup>
 				    <thead>
 				      <tr>
 						<th>Date</th>
@@ -163,7 +173,18 @@
 			}
 
 
-			function fnExcelReport()
+function fnExcelReport(){
+    
+   var doc = new jsPDF();
+    // It can parse html:
+    doc.autoTable({html: '#rec_tbl'});
+    
+    
+    
+    doc.save('report.pdf');
+}
+
+			function fnExcelReportx()
 {
     var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
     var textRange; var j=0;
